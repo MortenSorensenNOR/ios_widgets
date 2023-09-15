@@ -4,20 +4,42 @@ Script for extracting the timetable data from https://ntnu.1024.no/USER
 
 */
 
-(function() {
-    const timetable = document.getElementById("schedule");
+function extract_data() {
+    const timetable = document.getElementById("lectures");
     const tt_tbody = timetable.getElementsByTagName("tbody")[0];
     const tt_rows = tt_tbody.getElementsByTagName("tr");
     
-    let schedule = {
-    
+    const data = {
+        "Monday": [],
+        "Tuesday": [],
+        "Wednesday": [],
+        "Thursday": [],
+        "Friday": [],
+        "undefined": []
     }
-    let test = [];
-    
-    for (let i = 0; i < tt_rows.length; i++) {
-        const cols = tt_rows[i].getElementsByTagName("td");
-        const time = cols[0].children[0].innerHTML.split("&nbsp;-&nbsp;").join("-").split(" ").join("");
-        test.push(time);
+
+    for (let row of tt_rows) {
+        const row_data_fields = row.getElementsByTagName("td");
+        let day, subject, time, room, type;
+        try {
+            day = row_data_fields[1].innerHTML;
+        } catch {}
+        try {
+            subject = row_data_fields[0].innerHTML;
+        } catch {}
+        try {
+            time = row_data_fields[2].innerHTML;
+        } catch {}
+        try {
+            room = row_data_fields[3].children[0].innerHTML;
+        } catch {}
+        try {
+            type = row_data_fields[4].innerHTML;
+        } catch {}
+        const row_data_obj = {subject, time, room, type}
+        data[day].push(row_data_obj)
     }
-    return test;
-})
+    console.log(data)
+}
+
+extract_data()
